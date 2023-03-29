@@ -34,7 +34,6 @@ const createScheduldWindow = () => {
         }
         , icon: './images/icon.ico'
     })
-    scheduldWindow.setIcon(logo)
 
 
     scheduldWindow.loadFile('cron.html')
@@ -52,7 +51,6 @@ const createBtnWindow = () => {
         }
         , icon: './images/icon.ico'
     })
-    btnWindow.setIcon(logo)
     btnWindow.loadFile('sc.html')
     btnWindow.setMenu(null)
 
