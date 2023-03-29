@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户输入</title>
+    <style>
+        /* 为了让多行文本框更好看，设置一些样式 */
+        #input {
+            width: 95%;
+            height: 320px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            resize: none;
+            /* 禁止文本框大小调整 */
+        }
+
+        #submit-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="input"></textarea>
+    <button id="submit-btn" onclick="submit()">确定</button>
+</body>
+<script>
+    const inputElem = document.getElementById('input')
+    const cachedInput = localStorage.getItem('input')
+    if (cachedInput) {
+        inputElem.value = cachedInput
+    }
+    // 按回车触发按钮
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault()
+            submit()
+        } else if (event.keyCode === 27) {
+            // 按 ESC 关闭窗口
+            window.electronAPI.closeWindow()
+        }
+    })
+
+    function submit() {
+        const input = document.getElementById('input').value
+        // 向主进程发送消息，将用户输入传递给主进程
+        window.electronAPI.sendCmd(input)
+        localStorage.setItem('input', input)
+    }
+</script>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>定时任务</title>
+    <style>
+    .task {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .task-name,
+    .task-cron,
+    .task-action {
+        display: inline-block;
+        width: 33%;
+    }
+
+    .task-delete {
+        float: right;
+    }
+    </style>
+
+</head>
+
+<body>
+    <h2>定时任务列表</h2>
+    <div id="tasks-container"></div>
+    <div id="add-task-form">
+        <h2>添加定时任务</h2>
+        <div>
+            <label for="task-name">名称：</label>
+            <input type="text" id="task-name">
+        </div>
+        <div>
+            <label for="task-cron">Cron 字符串：</label>
+            <input type="text" id="task-cron">
+        </div>
+        <span>cron字符串生成器网站：https://cron.qqe2.com/</span>
+        <div>
+            <label for="task-action">执行内容：</label>
+            <textarea id="task-action"></textarea>
+        </div>
+        <div>
+            <button onclick="addTask()">添加任务</button>
+        </div>
+    </div>
+    <script src="./taskrenderer.js"></script>
+</body>
+</html>

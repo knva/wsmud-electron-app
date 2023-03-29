@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>动态按钮</title>
+    <style>
+        .button {
+            margin: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .button-text {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="buttons"></div>
+    <div id="form">
+        <input type="text" id="name" placeholder="名称">
+        <textarea id="action" placeholder="操作"></textarea>
+        <button onclick="addButton()">添加按钮</button>
+    </div>
+</body>
+<script>
+    const { ipcRenderer } = require('electron')
+
+    function addButton() {
+        const name = document.getElementById('name').value.trim()
+        const action = document.getElementById('action').value.trim()
+        if (name === '' || action === '') {
+            alert('请输入名称和操作')
+            return
+        }
+        ipcRenderer.send('add-button', { name, action })
+    }
+
+    function createButton(id, name, action) {
+        const button = document.createElement('div')
+        button.classList.add('button')
+        button.dataset.id = id
+        button.onclick = () => ipcRenderer.send('button-click', { id })
+        const buttonText = document.createElement('span')
+        buttonText.classList.add('button-text')
+        buttonText.innerText = name
+        button.appendChild(buttonText)
+
+        const deleteButton = document.createElement('button')
+        deleteButton.innerHTML = '删除'
+        deleteButton.addEventListener('click', () => {
+            ipcRenderer.send('delete-button', { id })
+        })  
+        deleteButton.style.float = 'right'; // 添加删除按钮的内联样式
+        button.appendChild(deleteButton)
+
+        document.getElementById('buttons').appendChild(button)
+    }
+
+    // 初始化时向主进程请求已有按钮的信息
+    ipcRenderer.send('get-buttons')
+
+    ipcRenderer.on('buttons', (event, data) => {
+        data.forEach(button => createButton(button.id, button.name, button.action))
+    })
+
+    ipcRenderer.on('add-button', (event, data) => {
+        createButton(data.id, data.name, data.action)
+    })
+
+    ipcRenderer.on('delete-button', (event, data) => {
+        const { id } = data
+        const button = document.querySelector(`.button[data-id="${id}"]`)
+        button.remove()
+    })
+
+    ipcRenderer.on('edit-button', (event, data) => {
+        const { id, name, action } = data
+        const button = document.querySelector(`.button[data-id="${id}"]`)
+        button.querySelector('.button-text').innerText = name
+    })
+</script>
+
+</html>
